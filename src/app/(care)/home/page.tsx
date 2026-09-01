@@ -5,6 +5,7 @@ import {
   Smile,
   Bot,
   Bell,
+  Pill,
   Sunrise,
   Sparkles,
   ChevronRight,
@@ -24,7 +25,7 @@ export default async function CareHomePage() {
   const today = new Date();
   const todayLabel = format(today, "EEEE, MMMM d");
 
-  const [reminders, memoryCount, peopleCount, moodToday] = await Promise.all([
+  const [reminders, memoryCount, peopleCount, moodToday, medicationCount] = await Promise.all([
     prisma.reminder.findMany({
       where: { patientId: ctx.profile.id, isActive: true },
       orderBy: [{ time: "asc" }, { createdAt: "asc" }],
@@ -46,6 +47,7 @@ export default async function CareHomePage() {
         createdAt: { gte: startOfDay(today) },
       },
     }),
+    prisma.medication.count({ where: { patientId: ctx.profile.id, isActive: true } }),
   ]);
 
   // "Up next" — the next 3 reminders that aren't already done today.
@@ -74,6 +76,13 @@ export default async function CareHomePage() {
       hint: "Your gentle helper",
       icon: <Bot aria-hidden className="h-7 w-7" />,
       color: "bg-remme-sage-deep text-white",
+    },
+    {
+      href: "/medications",
+      label: "My medications",
+      hint: `${medicationCount} active med${medicationCount !== 1 ? "s" : ""}`,
+      icon: <Pill aria-hidden className="h-7 w-7" />,
+      color: "bg-remme-sage text-white",
     },
   ];
 
@@ -128,7 +137,7 @@ export default async function CareHomePage() {
           <Sparkles aria-hidden className="h-6 w-6 text-remme-amber" />
           Your day, all together
         </h2>
-        <dl className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <dl className="grid grid-cols-1 gap-4 sm:grid-cols-4">
           <div className="glass-solid flex flex-col gap-1 rounded-2xl p-4">
             <dt className="text-base text-remme-ink/55">Memories kept</dt>
             <dd className="text-4xl font-bold text-remme-sage-deep">{memoryCount}</dd>
@@ -136,6 +145,10 @@ export default async function CareHomePage() {
           <div className="glass-solid flex flex-col gap-1 rounded-2xl p-4">
             <dt className="text-base text-remme-ink/55">People you love</dt>
             <dd className="text-4xl font-bold text-remme-sage-deep">{peopleCount}</dd>
+          </div>
+          <div className="glass-solid flex flex-col gap-1 rounded-2xl p-4">
+            <dt className="text-base text-remme-ink/55">Active meds</dt>
+            <dd className="text-4xl font-bold text-remme-sage-deep">{medicationCount}</dd>
           </div>
           <div className="glass-solid flex flex-col gap-1 rounded-2xl p-4">
             <dt className="text-base text-remme-ink/55">Mood checks today</dt>

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   Home,
   Bell,
+  Pill,
   UsersRound,
   Images,
   Bot,
@@ -22,6 +23,7 @@ export interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { href: "/home", label: "Home", icon: <Home aria-hidden /> },
   { href: "/reminders", label: "Reminders", icon: <Bell aria-hidden /> },
+  { href: "/medications", label: "Meds", icon: <Pill aria-hidden /> },
   { href: "/people", label: "My People", icon: <UsersRound aria-hidden /> },
   { href: "/memories", label: "My Memories", icon: <Images aria-hidden /> },
   { href: "/assistant", label: "Assistant", icon: <Bot aria-hidden /> },

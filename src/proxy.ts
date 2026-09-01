@@ -36,7 +36,7 @@ export async function proxy(request: NextRequest) {
   const role = token.role;
 
   // Patient (Care Mode) routes live at the root: /home, /reminders, etc.
-  const CARE_PATHS = ["/home", "/reminders", "/people", "/memories", "/assistant", "/mood", "/routine", "/sos", "/quiz"];
+  const CARE_PATHS = ["/home", "/reminders", "/medications", "/people", "/memories", "/assistant", "/mood", "/routine", "/sos", "/quiz"];
   const isCarePath = CARE_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 
   if (isCarePath || pathname === "/") {

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   BellRing,
+  Pill,
   Sparkles,
   Users,
   Siren,
@@ -22,6 +23,7 @@ import { PatientSwitcher, usePatient } from "./PatientSwitcher";
 const NAV = [
   { href: "/caregiver/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/caregiver/reminders", label: "Reminders", icon: BellRing },
+  { href: "/caregiver/medications", label: "Meds", icon: Pill },
   { href: "/caregiver/memories", label: "Memory", icon: Sparkles },
   { href: "/caregiver/people", label: "People", icon: Users },
   { href: "/caregiver/alerts", label: "Alerts", icon: Siren },

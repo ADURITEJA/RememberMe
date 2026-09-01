@@ -146,12 +146,35 @@ model Medication {
   id            String   @id @default(cuid())
   patientId     String
   patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  
+
   name          String
-  dosage        String
-  instructions  String?
-  imageUrl      String?
+  dosage        String          // "1 tablet", "5ml", etc.
+  instructions  String?         // "Take with food", "After breakfast"
+  imageUrl      String?         // Photo of the pill for visual ID
+  frequency     String  @default("DAILY")  // "DAILY", "WEEKLY", "AS_NEEDED"
+  times         String  @default("09:00")  // Comma-separated HH:mm for daily; JSON for weekly
+  startDate     DateTime @default(now())
+  endDate       DateTime?
+  refillDate    DateTime?       // When to reorder
+  isActive      Boolean  @default(true)
   createdAt     DateTime @default(now())
+
+  logs          MedicationLog[]
+}
+
+model MedicationLog {
+  id            String   @id @default(cuid())
+  medicationId  String
+  medication    Medication @relation(fields: [medicationId], references: [id], onDelete: Cascade)
+
+  scheduledFor  DateTime     // The date+time this dose was scheduled
+  status        String       // "TAKEN", "SKIPPED", "MISSED"
+  takenAt       DateTime?    // When the patient actually logged it
+  note          String?      // Optional patient note
+
+  createdAt     DateTime @default(now())
+
+  @@unique([medicationId, scheduledFor])  // One log per scheduled slot
 }
 
 // --- PEOPLE & MEMORIES ---
