@@ -6,6 +6,7 @@ import {
   Users,
   MapPin,
   Siren,
+  Pill,
   ChevronRight,
   CheckCircle2,
   Clock,
@@ -50,6 +51,9 @@ export default async function CaregiverDashboardPage({
     alerts,
     zones,
     lastPing,
+    activeMedCount,
+    recentMedLogs,
+    todayMedLogs,
   ] = await Promise.all([
     prisma.reminder.findMany({
       where: { patientId: active.id, isActive: true },
@@ -85,6 +89,20 @@ export default async function CaregiverDashboardPage({
       where: { patientId: active.id },
       orderBy: { createdAt: "desc" },
     }),
+    prisma.medication.count({ where: { patientId: active.id, isActive: true } }),
+    prisma.medicationLog.findMany({
+      where: {
+        medication: { patientId: active.id },
+        scheduledFor: { gte: subDays(now, 7), lte: dayEnd },
+      },
+    }),
+    prisma.medicationLog.findMany({
+      where: {
+        medication: { patientId: active.id },
+        scheduledFor: { gte: dayStart, lte: dayEnd },
+      },
+      include: { medication: true },
+    }),
   ]);
 
   // Today's reminders completion status.
@@ -103,6 +121,11 @@ export default async function CaregiverDashboardPage({
   const insideSafe = zones.length > 0 && zoneStatus.inside;
   const outsideSafe = zones.length > 0 && !zoneStatus.inside && point !== null;
   const unreadAlerts = alerts.filter((a) => !a.isRead).length;
+
+  // Medication adherence (last 7 days)
+  const totalDoses = recentMedLogs.length;
+  const takenDoses = recentMedLogs.filter((l) => l.status === "TAKEN").length;
+  const adherencePct = totalDoses > 0 ? Math.round((takenDoses / totalDoses) * 100) : 100;
 
   const statCards = [
     {
@@ -126,6 +149,13 @@ export default async function CaregiverDashboardPage({
       icon: MapPin,
       href: "/caregiver/location",
       tone: insideSafe,
+    },
+    {
+      label: "Medications",
+      value: activeMedCount > 0 ? `${adherencePct}%` : "—",
+      icon: Pill,
+      href: "/caregiver/medications",
+      tone: adherencePct >= 80 && activeMedCount > 0,
     },
   ];
 
@@ -171,6 +201,65 @@ export default async function CaregiverDashboardPage({
       </section>
 
       <div className="grid gap-4 lg:grid-cols-2">
+        {/* Today's Medications */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center justify-between gap-2 text-xl">
+              <span className="flex items-center gap-2">
+                <Pill aria-hidden className="h-5 w-5 text-remme-sage" />
+                Today&apos;s medications
+              </span>
+              <Link
+                href="/caregiver/medications"
+                className="inline-flex min-h-9 items-center gap-1 rounded-xl px-2 text-base font-medium text-remme-sage-deep hover:bg-remme-sage/10"
+              >
+                Details <ChevronRight aria-hidden className="h-4 w-4" />
+              </Link>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {activeMedCount === 0 ? (
+              <p className="text-lg text-remme-ink/55">No active medications.</p>
+            ) : (
+              <ul className="flex flex-col gap-2">
+                {todayMedLogs.length === 0 ? (
+                  <li className="flex items-center gap-3 rounded-2xl border border-remme-sage/10 bg-white/50 px-4 py-3">
+                    <Clock aria-hidden className="h-6 w-6 shrink-0 text-remme-amber" />
+                    <span className="text-lg text-remme-ink">No doses scheduled yet today</span>
+                  </li>
+                ) : (
+                  todayMedLogs.map((log) => {
+                    const done = log.status === "TAKEN";
+                    return (
+                      <li
+                        key={log.id}
+                        className="flex items-center gap-3 rounded-2xl border border-remme-sage/10 bg-white/50 px-4 py-3"
+                      >
+                        {done ? (
+                          <CheckCircle2 aria-hidden className="h-6 w-6 shrink-0 text-remme-sage" />
+                        ) : (
+                          <Clock aria-hidden className="h-6 w-6 shrink-0 text-remme-amber" />
+                        )}
+                        <span className="flex-1">
+                          <span className={`block text-lg font-medium ${done ? "text-remme-ink/45 line-through" : "text-remme-ink"}`}>
+                            {log.medication.name} {log.medication.dosage}
+                          </span>
+                          <span className="text-sm text-remme-ink/50">
+                            {log.medication.times.split(",")[0]?.trim()}
+                          </span>
+                        </span>
+                        <Badge variant={done ? "sage" : "amber"}>
+                          {done ? "Taken" : log.status === "SKIPPED" ? "Skipped" : "Pending"}
+                        </Badge>
+                      </li>
+                    );
+                  })
+                )}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Reminders today */}
         <Card>
           <CardHeader className="pb-3">

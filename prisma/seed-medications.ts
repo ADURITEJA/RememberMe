@@ -126,6 +126,51 @@ async function main() {
   }
 
   console.log(`Created ${logCount} MedicationLog entries across the last 7 days.`);
+
+  // Seed notifications for Ravi
+  await prisma.notification.deleteMany({ where: { patientId } });
+
+  const yesterday = subDays(now, 1);
+  const twoDaysAgo = subDays(now, 2);
+
+  await prisma.notification.createMany({
+    data: [
+      {
+        patientId,
+        title: "Missed medication",
+        body: "You missed Donepezil 10mg at 9:00 AM yesterday — that's okay, just a heads up 💛",
+        type: "MISSED_MEDICATION",
+        isRead: true,
+        createdAt: yesterday,
+      },
+      {
+        patientId,
+        title: "Reminder from Anitha",
+        body: "Don't forget your evening walk with Anitha today! 🌇",
+        type: "CAREGIVER_NOTE",
+        isRead: false,
+        createdAt: yesterday,
+      },
+      {
+        patientId,
+        title: "Check-in",
+        body: "Anitha wants to know how your day was 💛",
+        type: "CHECK_IN",
+        isRead: false,
+        createdAt: twoDaysAgo,
+      },
+      {
+        patientId,
+        title: "Missed medication",
+        body: "You missed Metformin 500mg at 1:00 PM — no worries, just letting you know 💛",
+        type: "MISSED_MEDICATION",
+        isRead: false,
+        createdAt: twoDaysAgo,
+      },
+    ],
+  });
+
+  console.log("Created 4 demo notifications.");
   console.log("Done! 🎉");
 }
 

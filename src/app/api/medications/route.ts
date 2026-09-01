@@ -5,6 +5,7 @@ import {
 } from "@/components/care/care-db";
 import { prisma } from "@/lib/prisma";
 import { startOfDay, endOfDay } from "date-fns";
+import { generateMissedMedicationAlert } from "@/lib/medication-alerts";
 
 /**
  * GET /api/medications — patient's active medications + today's log status.
@@ -103,6 +104,11 @@ export async function POST(request: NextRequest) {
         takenAt: now,
       },
     });
+
+    // Fire-and-forget: create alert + notification for missed/skipped doses
+    if (status === "SKIPPED") {
+      generateMissedMedicationAlert(medicationId, scheduledFor).catch(console.error);
+    }
   } catch {
     return Response.json({ error: "Could not log dose. Please try again." }, { status: 500 });
   }

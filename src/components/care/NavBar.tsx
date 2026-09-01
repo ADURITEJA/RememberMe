@@ -11,6 +11,7 @@ import {
   Bot,
   Smile,
   CalendarDays,
+  BellDot,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +30,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/assistant", label: "Assistant", icon: <Bot aria-hidden /> },
   { href: "/mood", label: "Mood", icon: <Smile aria-hidden /> },
   { href: "/routine", label: "Routine", icon: <CalendarDays aria-hidden /> },
+  { href: "/notifications", label: "Alerts", icon: <BellDot aria-hidden /> },
 ];
 
 /**
