@@ -1,0 +1,397 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// --- NEXTAUTH MODELS ---
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  
+  access_token       String?  
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// --- CORE APP MODELS ---
+// Role string values: "CARE_USER" | "CAREGIVER" | "ADMIN"
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?   // Hashed password for email login
+  role          String    @default("CARE_USER") // "CARE_USER" | "CAREGIVER" | "ADMIN"
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  
+  // If user is a patient
+  careProfile   CareProfile? 
+  
+  // If user is a caregiver
+  caregiverRelationships CaregiverRelationship[]
+
+  alertsGiven   Alert[] @relation("AlertsTarget")
+}
+
+model CareProfile {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  dateOfBirth  DateTime?
+  address      String?
+  diagnosis    String?  // Optional context
+  medicalNotes String?
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Data linked to the patient
+  caregivers       CaregiverRelationship[]
+  reminders        Reminder[]
+  medications      Medication[]
+  people           Person[]
+  memories         Memory[]
+  routines         Routine[]
+  moodCheckIns     MoodCheckIn[]
+  importantPlaces  ImportantPlace[]
+  safetyZones      SafetyZone[]
+  locationPings    LocationPing[]
+  emergencyContacts EmergencyContact[]
+  alerts           Alert[]
+  notifications    Notification[]
+  memoryQuizzes    MemoryQuiz[]
+  memoryReports    MemoryReport[]
+}
+
+// Links Caregivers to Patients (many-to-many via explicit relation)
+model CaregiverRelationship {
+  id            String   @id @default(cuid())
+  caregiverId   String
+  patientId     String
+  
+  caregiver     User        @relation(fields: [caregiverId], references: [id], onDelete: Cascade)
+  patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  permissions   String? // e.g., JSON string of specific access rights
+  createdAt     DateTime @default(now())
+
+  @@unique([caregiverId, patientId])
+}
+
+// --- REMINDERS & MEDICATION ---
+model Reminder {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  title         String
+  description   String?
+  time          String      // HH:mm format
+  recurrence    String      // "DAILY", "WEEKLY", "ONCE", etc.
+  category      String      // "Medication", "Meals", "Appointments", etc.
+  icon          String?
+  imageUrl      String?
+  voiceUrl      String?
+  
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  
+  occurrences   ReminderOccurrence[]
+}
+
+model ReminderOccurrence {
+  id            String   @id @default(cuid())
+  reminderId    String
+  reminder      Reminder @relation(fields: [reminderId], references: [id], onDelete: Cascade)
+  
+  scheduledFor  DateTime
+  completedAt   DateTime?
+  status        String   @default("PENDING") // "PENDING", "COMPLETED", "MISSED"
+  notes         String?
+}
+
+model Medication {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  name          String
+  dosage        String
+  instructions  String?
+  imageUrl      String?
+  createdAt     DateTime @default(now())
+}
+
+// --- PEOPLE & MEMORIES ---
+model Person {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  name          String
+  relationship  String
+  nickname      String?
+  phoneNumber   String?
+  description   String?
+  photoUrl      String?
+  voiceUrl      String?
+  
+  createdAt     DateTime @default(now())
+  
+  memoryQuizQuestions MemoryQuizQuestion[]
+}
+
+model Memory {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  title         String
+  description   String?
+  date          DateTime
+  location      String?
+  
+  createdAt     DateTime @default(now())
+  
+  media         MemoryMedia[]
+  transcript    MemoryTranscript?
+  memoryQuizQuestions MemoryQuizQuestion[]
+}
+
+model MemoryMedia {
+  id            String   @id @default(cuid())
+  memoryId      String
+  memory        Memory   @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  
+  type          String   // "PHOTO", "VIDEO", "VOICE"
+  url           String
+  
+  createdAt     DateTime @default(now())
+}
+
+model MemoryTranscript {
+  id            String   @id @default(cuid())
+  memoryId      String   @unique
+  memory        Memory   @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  
+  text          String   // Speech-to-text output
+  
+  createdAt     DateTime @default(now())
+}
+
+// --- ROUTINES & DAILY ---
+model Routine {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  name          String   // "Morning", "Afternoon", "Evening"
+  isActive      Boolean  @default(true)
+  
+  steps         RoutineStep[]
+}
+
+model RoutineStep {
+  id            String   @id @default(cuid())
+  routineId     String
+  routine       Routine  @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  
+  title         String
+  timeEst       String?  // Estimate, e.g. "08:00 AM" or "30 mins"
+  order         Int
+}
+
+model MoodCheckIn {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  mood          String   // "GOOD", "OKAY", "BAD"
+  note          String?
+  voiceUrl      String?
+  
+  createdAt     DateTime @default(now())
+}
+
+// --- PLACES & LOCATION ---
+model ImportantPlace {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  name          String
+  address       String
+  lat           Float?
+  lng           Float?
+  contactNumber String?
+  notes         String?
+  photoUrl      String?
+  
+  createdAt     DateTime @default(now())
+}
+
+model SafetyZone {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  name          String
+  lat           Float
+  lng           Float
+  radius        Int      // In meters
+  activeHours   String?  // JSON or cron parsing
+  isActive      Boolean  @default(true)
+  
+  zoneEvents    ZoneEvent[]
+}
+
+model LocationPing {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  lat           Float
+  lng           Float
+  accuracy      Float?
+  battery       Float?
+  
+  createdAt     DateTime @default(now())
+  
+  zoneEvents    ZoneEvent[]
+}
+
+model ZoneEvent {
+  id            String   @id @default(cuid())
+  zoneId        String
+  zone          SafetyZone @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  
+  pingId        String
+  ping          LocationPing @relation(fields: [pingId], references: [id], onDelete: Cascade)
+  
+  type          String   // "EXIT", "ENTRY"
+  createdAt     DateTime @default(now())
+}
+
+// --- SAFETY & COMMS ---
+model EmergencyContact {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  name          String
+  phoneNumber   String
+  relationship  String
+  order         Int
+}
+
+model Alert {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  targetUserId  String?
+  targetUser    User?    @relation("AlertsTarget", fields: [targetUserId], references: [id])
+  
+  type          String   // "MISSED_REMINDER", "SOS", "ZONE_EXIT", etc.
+  message       String
+  isRead        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+}
+
+model Notification {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  title         String
+  body          String
+  type          String
+  isRead        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+}
+
+// --- QUIZZES & REPORTS (SECTION 4A) ---
+model MemoryQuiz {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  date          DateTime @default(now())
+  
+  questions     MemoryQuizQuestion[]
+  attempts      MemoryQuizAttempt[]
+}
+
+model MemoryQuizQuestion {
+  id            String   @id @default(cuid())
+  quizId        String
+  quiz          MemoryQuiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  
+  sourcePersonId String?
+  sourcePerson  Person?    @relation(fields: [sourcePersonId], references: [id])
+  
+  sourceMemoryId String?
+  sourceMemory  Memory?    @relation(fields: [sourceMemoryId], references: [id])
+  
+  questionText  String
+  questionType  String   // "WHO_IS_THIS", "WHERE_WAS_THIS", "WHAT_HAPPENED"
+  imageUrl      String?
+  options       String   // JSON array of strings
+  correctAnswer String
+}
+
+model MemoryQuizAttempt {
+  id            String   @id @default(cuid())
+  quizId        String
+  quiz          MemoryQuiz @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  
+  score         Int
+  details       String   // JSON of answers
+  completedAt   DateTime @default(now())
+}
+
+model MemoryReport {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       CareProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  
+  period        String   // "DAILY", "WEEKLY", "MONTHLY"
+  startDate     DateTime
+  endDate       DateTime
+  fileUrl       String
+  generatedBy   String?
+  
+  createdAt     DateTime @default(now())
+}
