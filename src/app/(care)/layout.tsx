@@ -13,10 +13,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * Care Mode chrome: warm gradient backdrop, big friendly header with a
- * prominent SOS button, and a bottom navigation with large touch targets.
- * The section heading style ("Care Mode = large type, generous spacing")
- * is enforced by the token styles used inside each page.
+ * Care Mode chrome: Apple-style translucent header, bottom nav.
  */
 export default async function CareLayout({
   children,
@@ -27,20 +24,20 @@ export default async function CareLayout({
 
   return (
     <div className="flex min-h-dvh flex-col">
-      {/* Top chrome */}
-      <header className="sticky top-0 z-30 bg-remme-offwhite/75 backdrop-blur-xl">
+      {/* Apple-style sticky header */}
+      <header className="sticky top-0 z-30 bg-white/72 backdrop-blur-[20px] saturate-[180%] border-b border-[rgba(0,0,0,0.05)]">
         <div className="mx-auto flex w-full max-w-3xl items-center justify-between gap-3 px-4 py-3">
           <Link
             href="/home"
-            className="flex min-h-12 items-center gap-2 rounded-2xl px-2 text-remme-ink transition-colors hover:bg-remme-sage/10"
+            className="flex min-h-12 items-center gap-2 rounded-[980px] px-3 text-[#1d1d1f] transition-all duration-200 hover:bg-[#f5f5f7]"
             aria-label="Remme Care home"
           >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-remme-sage text-white">
-              <HeartHandshake aria-hidden className="h-6 w-6" />
+            <span className="flex h-10 w-10 items-center justify-center rounded-[980px] bg-[#0071e3] text-white">
+              <HeartHandshake aria-hidden className="h-5 w-5" />
             </span>
             <span className="flex flex-col leading-tight">
-              <span className="text-lg font-bold tracking-tight">Remme</span>
-              <span className="text-xs font-medium text-remme-sage-deep">Care Mode</span>
+              <span className="text-base font-semibold tracking-tight">Remme</span>
+              <span className="text-xs font-medium text-[#86868b]">Care Mode</span>
             </span>
           </Link>
 
@@ -48,9 +45,9 @@ export default async function CareLayout({
             <Link
               href="/settings"
               aria-label="Settings"
-              className="flex h-12 w-12 items-center justify-center rounded-2xl text-remme-ink/60 transition-colors hover:bg-remme-sage/10 hover:text-remme-ink"
+              className="flex h-11 w-11 items-center justify-center rounded-[980px] text-[#86868b] transition-all duration-200 hover:bg-[#f5f5f7] hover:text-[#1d1d1f]"
             >
-              <Settings aria-hidden className="h-6 w-6" />
+              <Settings aria-hidden className="h-5 w-5" />
             </Link>
             <Link href="/sos" aria-label="Call for help now">
               <Button

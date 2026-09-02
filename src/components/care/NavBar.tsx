@@ -34,8 +34,7 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 /**
- * Bottom navigation with large, easy tap targets — the Care Mode primary
- * navigation. Wraps to two rows on small phones so every item stays visible.
+ * Apple-style bottom navigation bar.
  */
 export default function NavBar() {
   const pathname = usePathname();
@@ -48,9 +47,9 @@ export default function NavBar() {
   return (
     <nav
       aria-label="Main navigation"
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-black/5 bg-remme-offwhite/85 backdrop-blur-xl pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_32px_rgba(31,38,32,0.06)]"
+      className="fixed inset-x-0 bottom-0 z-40 bg-white/72 backdrop-blur-[20px] saturate-[180%] border-t border-[rgba(0,0,0,0.05)] pb-[env(safe-area-inset-bottom)]"
     >
-      <div className="mx-auto flex w-full max-w-3xl flex-wrap items-stretch justify-center gap-x-1 gap-y-1 px-2 py-2">
+      <div className="mx-auto flex w-full max-w-3xl flex-wrap items-stretch justify-center gap-x-0.5 gap-y-0.5 px-2 py-1.5">
         {NAV_ITEMS.map((item) => {
           const active = isActive(item.href);
           return (
@@ -59,16 +58,16 @@ export default function NavBar() {
               href={item.href}
               aria-current={active ? "page" : undefined}
               className={cn(
-                "flex min-h-14 min-w-[4.75rem] flex-1 basis-[5.5rem] flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-1.5 text-center transition-colors min-touch",
+                "flex min-h-14 min-w-[4.5rem] flex-1 basis-[5.25rem] flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-1.5 text-center transition-all duration-200 min-touch",
                 active
-                  ? "bg-remme-sage/15 text-remme-sage-deep"
-                  : "text-remme-ink/65 hover:bg-remme-sage/8 hover:text-remme-ink",
+                  ? "text-[#0071e3]"
+                  : "text-[#86868b] hover:text-[#1d1d1f]",
               )}
             >
-              <span className="h-7 w-7" aria-hidden>
+              <span className="h-6 w-6" aria-hidden>
                 {item.icon}
               </span>
-              <span className="max-w-full text-xs font-medium leading-tight sm:text-sm">
+              <span className="max-w-full text-[10px] font-medium leading-tight sm:text-xs">
                 {item.label}
               </span>
             </Link>

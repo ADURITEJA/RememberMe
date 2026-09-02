@@ -1,145 +1,158 @@
 @import "tailwindcss";
 
 /* ==================================================
-   REMME DESIGN SYSTEM  —  Apple "Liquid Glass" calm
+   REMME DESIGN SYSTEM  —  Apple "Liquid Glass"
    ================================================== */
 
 @theme {
-  /* Core palette */
-  --color-remme-sage: #5B8C72;         /* Primary accent — warm sage green */
-  --color-remme-sage-deep: #4A735E;
-  --color-remme-amber: #E8A94C;        /* Secondary accent — soft amber   */
-  --color-remme-offwhite: #FAF7F2;     /* Warm off-white background       */
-  --color-remme-charcoal: #1E2620;     /* Deep warm charcoal (dark bg)    */
-  --color-remme-ink: #26302B;          /* Warm ink text (light mode)      */
-  --color-remme-inklight: #F3EFE8;     /* Warm off-white text (dark mode) */
+  /* ── Core Palette ─────────────────────────────── */
+  --color-remme-sage: #0071e3;           /* Primary accent — Apple blue         */
+  --color-remme-sage-deep: #0066cc;
+  --color-remme-amber: #E8A94C;          /* Kept for backward compat            */
+  --color-remme-offwhite: #fafafa;        /* Near-white (Apple's bg)             */
+  --color-remme-charcoal: #1d1d1f;       /* Apple near-black                    */
+  --color-remme-ink: #1d1d1f;            /* Primary text                        */
+  --color-remme-inklight: #f5f5f7;       /* Apple input bg / light surface      */
+  --color-remme-secondary: #86868b;      /* Secondary text — Apple gray         */
 
-  /* Status colors */
-  --color-remme-status-completed: #5B8C72;
-  --color-remme-status-pending: #E8A94C;
-  --color-remme-status-attention: #C96A4B;  /* Warm terracotta  */
-  --color-remme-status-emergency: #D93A2B;  /* SOS red — reserved */
+  /* Status colors — kept for safety-critical UI */
+  --color-remme-status-completed: #34c759;
+  --color-remme-status-pending: #ff9f0a;
+  --color-remme-status-attention: #C96A4B;
+  --color-remme-status-emergency: #ff3b30;
 
-  /* Glass tints */
+  /* ── Glass Tints ──────────────────────────────── */
   --color-glass-light: rgba(255, 255, 255, 0.72);
-  --color-glass-dark: rgba(30, 38, 32, 0.7);
+  --color-glass-dark: rgba(0, 0, 0, 0.50);
+  --color-glass-tint: rgba(255, 255, 255, 0.58);
 
-  /* Frosted panel surfaces */
-  --color-glass-tint: rgba(250, 247, 242, 0.68);
+  /* ── Shadows — Apple soft layered ─────────────── */
+  --shadow-glass: 0 2px 12px 0 rgba(0,0,0,0.06), 0 8px 32px 0 rgba(0,0,0,0.04);
+  --shadow-glass-sm: 0 1px 4px 0 rgba(0,0,0,0.05), 0 4px 16px 0 rgba(0,0,0,0.03);
+  --shadow-glass-lg: 0 4px 24px 0 rgba(0,0,0,0.08), 0 24px 60px 0 rgba(0,0,0,0.06);
 
-  /* Shadows — soft "lift" for glass */
-  --shadow-glass: 0 8px 32px 0 rgba(31, 38, 32, 0.08);
-  --shadow-glass-sm: 0 4px 16px 0 rgba(31, 38, 32, 0.06);
-  --shadow-glass-lg: 0 24px 60px 0 rgba(31, 38, 32, 0.14);
+  /* ── Typography ───────────────────────────────── */
+  --text-caretitle: 2.5rem;
+  --text-caresubtitle: 1.375rem;
+  --text-carebody: 1.125rem;
 
-  /* Typography scale (large, calm, readable) */
-  --text-caretitle: 3rem;
-  --text-caresubtitle: 1.5rem;
-  --text-carebody: 1.25rem;
+  /* ── Radius ───────────────────────────────────── */
+  --radius-remme-sm: 12px;
+  --radius-remme: 18px;
+  --radius-remme-lg: 24px;
+  --radius-remme-pill: 980px;
 
-  /* Squircle-ish radius scale */
-  --radius-remme-sm: 1rem;
-  --radius-remme: 1.5rem;
-  --radius-remme-lg: 2rem;
-  --radius-remme-full: 9999px;
-
-  /* Motion — minimal spring-ish easings */
-  --ease-remme-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* ── Motion ───────────────────────────────────── */
+  --ease-remme-spring: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-remme-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ---------- Glass utilities ---------- */
+/* ─── Glass Utilities ─────────────────────────────── */
+
 @utility glass-panel {
   background: color-mix(in srgb, var(--color-glass-light) 100%, transparent);
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  border: 1px solid rgba(255, 255, 255, 0.45);
-  border-top-color: rgba(255, 255, 255, 0.7);
-  box-shadow: var(--shadow-glass);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--radius-remme-lg);
+  box-shadow: var(--shadow-glass);
 }
 .dark .glass-panel {
   background: color-mix(in srgb, var(--color-glass-dark) 100%, transparent);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-top-color: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 @utility glass-card {
-  background: color-mix(in srgb, var(--color-glass-light) 92%, transparent);
-  backdrop-filter: blur(16px) saturate(1.3);
-  -webkit-backdrop-filter: blur(16px) saturate(1.3);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-top-color: rgba(255, 255, 255, 0.72);
-  box-shadow: var(--shadow-glass-sm);
+  background: color-mix(in srgb, rgba(255,255,255,0.82) 100%, transparent);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: var(--radius-remme);
+  box-shadow: var(--shadow-glass-sm);
 }
 .dark .glass-card {
-  background: color-mix(in srgb, var(--color-glass-dark) 94%, transparent);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-top-color: rgba(255, 255, 255, 0.18);
+  background: color-mix(in srgb, rgba(30,30,30,0.72) 100%, transparent);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Reduced transparency mode (accessibility toggle swaps glass for solid) */
 @utility glass-solid {
-  background: var(--color-remme-offwhite);
-  border: 1px solid rgba(38, 48, 43, 0.08);
-  box-shadow: var(--shadow-glass-sm);
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: var(--radius-remme);
+  box-shadow: var(--shadow-glass-sm);
 }
 .dark .glass-solid {
-  background: var(--color-remme-charcoal);
+  background: #1d1d1f;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* ---------- Base ---------- */
+/* ─── Scroll Animation ────────────────────────────── */
+
+@utility animate-fade-up {
+  animation: fadeUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Base ────────────────────────────────────────── */
+
 @layer base {
   :root {
-    --background: #faf7f2;
-    --foreground: #26302b;
+    --background: #ffffff;
+    --foreground: #1d1d1f;
   }
   .dark {
-    --background: #1e2620;
-    --foreground: #f3efe8;
+    --background: #000000;
+    --foreground: #f5f5f7;
   }
   body {
     color: var(--foreground);
     background-color: var(--background);
-    /* gentle warm gradient backdrop the glass sits on */
-    background-image:
-      radial-gradient(1200px 500px at 100% -10%, rgba(232, 169, 76, 0.07) 0%, transparent 55%),
-      radial-gradient(1000px 600px at -10% 110%, rgba(91, 140, 114, 0.08) 0%, transparent 55%),
-      radial-gradient(800px 500px at 55% 60%, rgba(91, 140, 114, 0.04) 0%, transparent 60%);
-    background-attachment: fixed;
+    font-family: -apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
     margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   html {
     -webkit-text-size-adjust: 100%;
   }
+  h1, h2, h3, h4, h5, h6 {
+    letter-spacing: -0.02em;
+  }
 }
 
-/* ---------- Accessibility ---------- */
+/* ─── Accessibility ───────────────────────────────── */
+
 @utility min-touch {
-  min-height: 3rem; /* 48px WCAG touch target */
+  min-height: 3rem;
   min-width: 3rem;
 }
 
 @layer base {
-  /* Visible, high-contrast focus styles */
   :focus-visible {
-    outline: 4px solid rgba(91, 140, 114, 0.5);
+    outline: 3px solid rgba(0, 113, 227, 0.5);
     outline-offset: 2px;
   }
 
-  /* High-contrast mode toggle: increase tap targets & font */
   .a11y-large-text {
     font-size: 1.25em;
   }
   .a11y-high-contrast .glass-card,
   .a11y-high-contrast .glass-panel,
   .a11y-high-contrast .glass-solid {
-    background: var(--color-remme-offwhite);
+    background: #ffffff;
     backdrop-filter: none;
-    border-color: rgba(38, 48, 43, 0.25);
-    color: #000;
+    border-color: rgba(0, 0, 0, 0.2);
+    color: #1d1d1f;
   }
   .a11y-high-contrast .glass-card {
     box-shadow: none;

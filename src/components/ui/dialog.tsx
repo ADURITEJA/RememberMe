@@ -6,9 +6,7 @@ import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
 
 /**
- * Accessible, glass-styled modal dialog with focus trap and Escape-to-close.
- * Self-contained (no external modal package): renders into <body> via portal,
- * traps focus, restores focus to the trigger, and wires aria-labelledby.
+ * Accessible, Apple-style glass modal dialog with focus trap and Escape-to-close.
  */
 
 type DialogContextValue = {
@@ -42,7 +40,6 @@ function Dialog({ open, onOpenChange, children }: DialogProps) {
     [onOpenChange],
   );
 
-  // Restore focus when dialog opens
   React.useEffect(() => {
     if (open) {
       lastFocused.current = document.activeElement as HTMLElement | null;
@@ -50,14 +47,12 @@ function Dialog({ open, onOpenChange, children }: DialogProps) {
     }
   }, [open]);
 
-  // Escape-to-close
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onOpenChange(false);
     };
     document.addEventListener("keydown", onKey);
-    // Lock body scroll
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
@@ -66,7 +61,6 @@ function Dialog({ open, onOpenChange, children }: DialogProps) {
     };
   }, [open, onOpenChange]);
 
-  // Simple focus trap
   React.useEffect(() => {
     if (!open) return;
     const content = contentRef.current;
@@ -101,10 +95,6 @@ interface DialogTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   asChild?: boolean;
 }
 
-/**
- * Renders a button that opens the dialog. Pass `asChild`-style children to
- * control styling (wrap your own button as the child).
- */
 function DialogTrigger({ asChild, onClick, ...props }: DialogTriggerProps) {
   const { setOpen } = useDialogContext();
   if (asChild && React.isValidElement(props.children)) {
@@ -140,13 +130,13 @@ function DialogContent({
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" aria-modal="true">
-      {/* Backdrop */}
+      {/* Backdrop — Apple style */}
       <div
         aria-hidden="true"
         className="absolute inset-0 bg-black/40 backdrop-blur-sm"
         onClick={() => setOpen(false)}
       />
-      {/* Sheet / body */}
+      {/* Modal panel — Apple Liquid Glass */}
       <div
         ref={contentRef}
         tabIndex={-1}
@@ -154,7 +144,7 @@ function DialogContent({
         aria-labelledby={title ? "remme-dialog-title" : undefined}
         aria-describedby={description ? "remme-dialog-desc" : undefined}
         className={cn(
-          "glass-panel relative z-10 w-full max-w-lg rounded-[2rem] p-6 sm:p-8 shadow-glass-lg animate-[dialogIn_0.2s_ease]",
+          "relative z-10 w-full max-w-lg rounded-[20px] p-6 sm:p-8 bg-white/72 backdrop-blur-[20px] saturate-[180%] border border-[rgba(0,0,0,0.08)] shadow-[0_2px_12px_0_rgba(0,0,0,0.06),0_8px_32px_0_rgba(0,0,0,0.04)] animate-[dialogIn_0.2s_ease]",
           className,
         )}
         {...props}
@@ -164,18 +154,18 @@ function DialogContent({
             type="button"
             onClick={() => setOpen(false)}
             aria-label="Close dialog"
-            className="absolute right-4 top-4 min-touch rounded-2xl p-2 text-remme-ink/60 hover:bg-white/60 hover:text-remme-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-remme-sage transition-colors dark:hover:bg-white/10"
+            className="absolute right-4 top-4 min-touch rounded-[980px] p-2 text-[#86868b] hover:bg-[#f5f5f7] hover:text-[#1d1d1f] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0071e3]/30 transition-all duration-200"
           >
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
         )}
         {title ? (
-          <h2 id="remme-dialog-title" className="pr-10 text-2xl font-semibold text-remme-ink dark:text-remme-inklight">
+          <h2 id="remme-dialog-title" className="pr-10 text-xl font-semibold text-[#1d1d1f]">
             {title}
           </h2>
         ) : null}
         {description ? (
-          <p id="remme-dialog-desc" className="mt-2 text-lg text-remme-ink/70 dark:text-remme-inklight/70">
+          <p id="remme-dialog-desc" className="mt-2 text-base text-[#86868b]">
             {description}
           </p>
         ) : null}
