@@ -26,6 +26,8 @@ import {
 } from "lucide-react";
 import { usePatient } from "@/components/caregiver/PatientSwitcher";
 import { A11ySettings, useA11y } from "@/components/ui/a11y-provider";
+import { ProfilePanel } from "@/components/caregiver/ProfilePanel";
+import { SignOutButton } from "@/components/SignOutButton";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -549,76 +551,57 @@ export default function CaregiverSettingsPage() {
 
       {/* Profile tab */}
       {activeTab === "profile" && (
-        <section className="flex flex-col gap-4" aria-labelledby="profile-heading">
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-xl" id="profile-heading">
-                <Shield aria-hidden className="h-5 w-5 text-remme-sage" />
-                Your caregiver profile
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-col gap-6">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 p-4 rounded-2xl bg-remme-sage/5 border border-remme-sage/15">
-                <div className="h-20 w-20 rounded-2xl bg-remme-sage flex items-center justify-center shrink-0">
-                  <UserRound aria-hidden className="h-10 w-10 text-white" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-remme-ink">Caregiver account</h3>
-                  <p className="mt-1 text-remme-ink/60">
-                    Your profile is managed through your Remme account. Changes to name, email, or
-                    password apply everywhere.
-                  </p>
-                </div>
-                <Button variant="ghost" size="lg" className="min-touch">
-                  Manage account
-                </Button>
-              </div>
-
-              <Separator />
-
-              <div className="flex flex-col gap-4">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-remme-ink/50">Contact preferences</h3>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="flex items-center gap-3 rounded-2xl border border-remme-sage/15 bg-white/60 p-4">
-                    <Mail aria-hidden className="h-6 w-6 text-remme-sage shrink-0" />
-                    <div>
-                      <p className="text-sm text-remme-ink/50">Primary email</p>
-                      <p className="font-medium text-remme-ink">{activePatient?.email ?? "—"}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 rounded-2xl border border-remme-sage/15 bg-white/60 p-4">
-                    <Phone aria-hidden className="h-6 w-6 text-remme-sage shrink-0" />
-                    <div>
-                      <p className="text-sm text-remme-ink/50">Phone (SMS alerts)</p>
-                      <p className="font-medium text-remme-ink">Not configured</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="flex flex-col gap-4">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-remme-ink/50">Data & privacy</h3>
-                <div className="flex flex-col gap-3">
-                  <Button variant="outline" className="min-touch justify-start gap-3">
-                    <Mail aria-hidden className="h-5 w-5" />
-                    <span>Export my data (GDPR)</span>
-                  </Button>
-                  <Button variant="outline" className="min-touch justify-start gap-3 text-remme-status-attention hover:text-remme-status-emergency">
-                    <Trash2 aria-hidden className="h-5 w-5" />
-                    <span>Delete my account</span>
-                  </Button>
-                </div>
-                <p className="text-sm text-remme-ink/60">
-                  Deleting your account removes all your data and unlinks you from patients. This
-                  cannot be undone.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
+        <>
+          <CaregiverProfileSection />
+          <div className="flex justify-center pt-4 pb-8">
+            <SignOutButton />
+          </div>
+        </>
       )}
     </div>
   );
+}
+
+function CaregiverProfileSection() {
+  const [profile, setProfile] = React.useState<{
+    name: string;
+    email: string;
+    role: string;
+    createdAt: string;
+  } | null>(null);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    fetch("/api/profile")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.ok && data.user) {
+          setProfile({
+            name: data.user.name ?? "",
+            email: data.user.email ?? "",
+            role: data.user.role,
+            createdAt: data.user.createdAt,
+          });
+        }
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-12">
+        <Loader2 aria-hidden className="h-8 w-8 animate-spin text-remme-sage" />
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="glass-card p-8 text-center">
+        <p className="text-remme-ink/60">Could not load profile.</p>
+      </div>
+    );
+  }
+
+  return <ProfilePanel profile={profile} />;
 }

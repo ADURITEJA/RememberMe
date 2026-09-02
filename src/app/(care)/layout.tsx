@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { HeartHandshake } from "lucide-react";
+import { HeartHandshake, Settings } from "lucide-react";
 import NavBar from "@/components/care/NavBar";
 import { requireCareSession } from "@/components/care/care-db";
 import { Button } from "@/components/ui/button";
@@ -44,16 +44,25 @@ export default async function CareLayout({
             </span>
           </Link>
 
-          <Link href="/sos" aria-label="Call for help now">
-            <Button
-              variant="danger"
-              size="lg"
-              className="gap-2 px-6 text-lg font-bold min-touch"
+          <div className="flex items-center gap-2">
+            <Link
+              href="/settings"
+              aria-label="Settings"
+              className="flex h-12 w-12 items-center justify-center rounded-2xl text-remme-ink/60 transition-colors hover:bg-remme-sage/10 hover:text-remme-ink"
             >
-              <span className="h-3 w-3 animate-pulse rounded-full bg-white" aria-hidden />
-              SOS
-            </Button>
-          </Link>
+              <Settings aria-hidden className="h-6 w-6" />
+            </Link>
+            <Link href="/sos" aria-label="Call for help now">
+              <Button
+                variant="danger"
+                size="lg"
+                className="gap-2 px-6 text-lg font-bold min-touch"
+              >
+                <span className="h-3 w-3 animate-pulse rounded-full bg-white" aria-hidden />
+                SOS
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 
