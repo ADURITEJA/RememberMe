@@ -43,7 +43,7 @@ export function RoleSelector({ userName, email, options }: RoleSelectorProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       <PatientCard
         userName={userName}
         email={email}
@@ -51,7 +51,7 @@ export function RoleSelector({ userName, email, options }: RoleSelectorProps) {
         onChoose={choose}
       />
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="flex flex-col gap-6">
         {options.map((option) => {
           if (option.type === "caregiver") {
             return (

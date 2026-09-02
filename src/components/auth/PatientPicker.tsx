@@ -52,7 +52,7 @@ export function PatientPicker({ patients, dashboardHref }: PatientPickerProps) {
               key={patient.id}
               variant="glass-hover"
               role="listitem"
-              className="w-full p-5"
+              className="w-full p-6"
             >
               <div className="flex items-center gap-5">
                 {patient.avatar ? (

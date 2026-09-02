@@ -9,10 +9,10 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant = "glass", ...props }, ref) => {
     const variants: Record<string, string> = {
       default:
-        "bg-white rounded-[20px] shadow-[0_1px_4px_0_rgba(0,0,0,0.05),0_4px_16px_0_rgba(0,0,0,0.03)] border border-[rgba(0,0,0,0.06)]",
+        "bg-white rounded-[18px] shadow-[0_1px_4px_0_rgba(0,0,0,0.05),0_4px_16px_0_rgba(0,0,0,0.03)] border border-[rgba(0,0,0,0.06)]",
       glass: "glass-card",
       "glass-hover":
-        "glass-card hover:shadow-[0_4px_24px_0_rgba(0,0,0,0.08),0_24px_60px_0_rgba(0,0,0,0.06)] hover:scale-[1.02] active:scale-[0.98] cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
+        "glass-card border border-[rgba(0,0,0,0.06)] hover:shadow-[0_4px_24px_0_rgba(0,0,0,0.08),0_24px_60px_0_rgba(0,0,0,0.06)] hover:scale-[1.02] active:scale-[0.98] cursor-pointer transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
       solid: "glass-solid",
     };
     return (
