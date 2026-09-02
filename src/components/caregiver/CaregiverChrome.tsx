@@ -20,6 +20,7 @@ import {
   Phone,
   MapPinned,
   Shield,
+  Smile,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PatientSwitcher, usePatient } from "./PatientSwitcher";
@@ -30,6 +31,7 @@ const NAV = [
   { href: "/caregiver/medications", label: "Meds", icon: Pill },
   { href: "/caregiver/routines", label: "Routines", icon: CalendarDays },
   { href: "/caregiver/memories", label: "Memory", icon: Sparkles },
+  { href: "/caregiver/mood", label: "Mood", icon: Smile },
   { href: "/caregiver/people", label: "People", icon: Users },
   { href: "/caregiver/emergency-contacts", label: "SOS Contacts", icon: Phone },
   { href: "/caregiver/places", label: "Places", icon: MapPinned },

@@ -4,6 +4,7 @@ import { HeartHandshake } from "lucide-react";
 import NavBar from "@/components/care/NavBar";
 import { requireCareSession } from "@/components/care/care-db";
 import { Button } from "@/components/ui/button";
+import OnboardingGate from "@/components/onboarding/OnboardingGate";
 
 export const metadata: Metadata = {
   title: "Remme Care — Your calm companion",
@@ -58,7 +59,7 @@ export default async function CareLayout({
 
       {/* Page content */}
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 pb-44 pt-6">
-        {children}
+        <OnboardingGate>{children}</OnboardingGate>
       </main>
 
       <NavBar />
