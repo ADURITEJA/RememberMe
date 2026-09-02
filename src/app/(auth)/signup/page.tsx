@@ -13,10 +13,10 @@ export default async function SignupPage() {
 
   return (
     <>
-      <h2 className="text-2xl font-semibold text-remme-ink dark:text-remme-inklight">
+      <h2 className="text-2xl font-semibold text-[#1d1d1f]">
         Create your account
       </h2>
-      <p className="mb-6 mt-1 text-lg text-remme-ink/60 dark:text-remme-inklight/60">
+      <p className="mb-6 mt-1 text-lg text-[#86868b]">
         It only takes a minute.
       </p>
       <SignupForm roles={SIGNUP_ROLES} />

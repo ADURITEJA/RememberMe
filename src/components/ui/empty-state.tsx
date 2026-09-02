@@ -11,7 +11,7 @@ export interface EmptyStateProps {
 }
 
 /**
- * Friendly empty-state placeholder with an optional call to action.
+ * Apple-style empty-state placeholder with an optional call to action.
  */
 function EmptyState({
   icon: Icon,
@@ -23,21 +23,21 @@ function EmptyState({
   return (
     <div
       className={cn(
-        "flex min-h-[16rem] flex-col items-center justify-center gap-4 rounded-3xl border border-dashed border-remme-sage/30 bg-white/40 p-10 text-center",
+        "flex min-h-[16rem] flex-col items-center justify-center gap-4 rounded-[20px] border border-dashed border-[rgba(0,0,0,0.1)] bg-white/40 p-10 text-center",
         className,
       )}
     >
       {Icon ? (
-        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-remme-sage/15">
-          <Icon aria-hidden="true" className="h-10 w-10 text-remme-sage" />
+        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#0071e3]/10">
+          <Icon aria-hidden="true" className="h-10 w-10 text-[#0071e3]" strokeWidth={1.5} />
         </div>
       ) : null}
       <div>
-        <h3 className="text-xl font-semibold text-remme-ink dark:text-remme-inklight">
+        <h3 className="text-xl font-semibold text-[#1d1d1f]">
           {title}
         </h3>
         {description ? (
-          <p className="mt-2 max-w-sm text-lg text-remme-ink/70 dark:text-remme-inklight/70">
+          <p className="mt-2 max-w-sm text-lg text-[#86868b]">
             {description}
           </p>
         ) : null}

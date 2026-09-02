@@ -74,17 +74,16 @@ export default async function RolePage() {
     });
   }
 
-  // Only a caregiver with no linked patients: still let them in.
   if (options.length === 0 && session.user.role === "CAREGIVER") {
     redirect("/caregiver/dashboard");
   }
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-semibold text-remme-ink dark:text-remme-inklight">
+      <h2 className="text-2xl font-semibold text-[#1d1d1f]">
         Choose your view
       </h2>
-      <p className="text-lg text-remme-ink/60 dark:text-remme-inklight/60">
+      <p className="text-lg text-[#86868b]">
         This account can act as more than one role.
       </p>
       <RoleSelector

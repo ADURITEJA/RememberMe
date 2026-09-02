@@ -80,7 +80,6 @@ export function LoginForm({ hasGoogle }: LoginFormProps) {
         return;
       }
 
-      // Remember-me flag is advisory; NextAuth JWT lifetime is configured server-side.
       if (rememberMe) {
         try {
           window.localStorage.setItem("remme:rememberMe", "1");
@@ -150,13 +149,13 @@ export function LoginForm({ hasGoogle }: LoginFormProps) {
           />
         </div>
 
-        <label className="flex min-touch items-center gap-3 text-lg text-remme-ink/70 dark:text-remme-inklight/70">
+        <label className="flex min-touch items-center gap-3 text-[15px] text-[#86868b]">
           <input
             type="checkbox"
             name="rememberMe"
             checked={rememberMe}
             onChange={(e) => setRememberMe(e.target.checked)}
-            className="h-6 w-6 rounded-lg border-remme-sage/40 text-remme-sage focus:ring-remme-sage/40 focus:ring-offset-0"
+            className="h-5 w-5 rounded-lg border border-[rgba(0,0,0,0.15)] text-[#0071e3] focus:ring-2 focus:ring-[#0071e3]/30 focus:ring-offset-0"
             disabled={loading}
             aria-label="Remember me on this device"
           />
@@ -169,18 +168,18 @@ export function LoginForm({ hasGoogle }: LoginFormProps) {
           id="login-error"
           role="alert"
           aria-live="polite"
-          className="rounded-2xl border border-remme-status-attention/40 bg-remme-status-attention/10 px-4 py-3 text-base font-medium text-remme-status-attention"
+          className="rounded-[12px] border border-[#ff9f0a]/30 bg-[#ff9f0a]/8 px-4 py-3 text-[15px] font-medium text-[#ff9f0a]"
         >
           {error}
         </p>
       ) : null}
 
-      <Button type="submit" variant="sage" className="min-touch w-full" isLoading={loading}>
+      <Button type="submit" className="min-touch w-full" isLoading={loading}>
         {loading ? (
           "Signing in…"
         ) : (
           <>
-            <LogIn aria-hidden="true" className="mr-2 h-5 w-5" />
+            <LogIn aria-hidden="true" className="mr-2 h-5 w-5" strokeWidth={1.5} />
             Sign in
           </>
         )}
@@ -191,11 +190,11 @@ export function LoginForm({ hasGoogle }: LoginFormProps) {
           <div
             role="separator"
             aria-label="or"
-            className="flex items-center gap-4 text-sm font-medium text-remme-ink/40 dark:text-remme-inklight/40"
+            className="flex items-center gap-4 text-sm font-medium text-[#86868b]/60"
           >
-            <span className="h-px flex-1 bg-remme-ink/10 dark:bg-remme-inklight/10" aria-hidden="true" />
+            <span className="h-px flex-1 bg-[rgba(0,0,0,0.08)]" aria-hidden="true" />
             or
-            <span className="h-px flex-1 bg-remme-ink/10 dark:bg-remme-inklight/10" aria-hidden="true" />
+            <span className="h-px flex-1 bg-[rgba(0,0,0,0.08)]" aria-hidden="true" />
           </div>
 
           <Button
@@ -211,9 +210,9 @@ export function LoginForm({ hasGoogle }: LoginFormProps) {
         </>
       ) : null}
 
-      <p className="text-center text-lg text-remme-ink/60 dark:text-remme-inklight/60">
+      <p className="text-center text-[15px] text-[#86868b]">
         Don&apos;t have an account?{" "}
-        <Link href="/signup" className="font-semibold text-remme-sage hover:underline">
+        <Link href="/signup" className="font-semibold text-[#0071e3] hover:underline">
           Create one
         </Link>
       </p>

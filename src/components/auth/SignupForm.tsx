@@ -14,7 +14,6 @@ type ApiError = { field?: string; message: string };
 
 export interface SignupFormProps {
   roles: RoleOption[];
-  /** Set to false when email signup is disabled (e.g. OAuth-only). */
   enabled?: boolean;
 }
 
@@ -73,7 +72,6 @@ export function SignupForm({ roles, enabled = true }: SignupFormProps) {
         return;
       }
 
-      // Auto sign-in with the newly created credentials.
       const result = await signIn("credentials", {
         redirect: false,
         email: email.trim().toLowerCase(),
@@ -81,7 +79,6 @@ export function SignupForm({ roles, enabled = true }: SignupFormProps) {
       });
 
       if (result?.error) {
-        // Account was created but auto-login failed — take them to login.
         router.push("/login?created=1");
         router.refresh();
         return;
@@ -112,7 +109,7 @@ export function SignupForm({ roles, enabled = true }: SignupFormProps) {
             }
           />
           {fieldError(fieldErrors ?? {}, "name") ? (
-            <p id="signup-name-error" className="mt-2 text-base font-medium text-remme-status-attention">
+            <p id="signup-name-error" className="mt-2 text-base font-medium text-[#ff9f0a]">
               {fieldError(fieldErrors ?? {}, "name")}
             </p>
           ) : null}
@@ -135,7 +132,7 @@ export function SignupForm({ roles, enabled = true }: SignupFormProps) {
             }
           />
           {fieldError(fieldErrors ?? {}, "email") ? (
-            <p id="signup-email-error" className="mt-2 text-base font-medium text-remme-status-attention">
+            <p id="signup-email-error" className="mt-2 text-base font-medium text-[#ff9f0a]">
               {fieldError(fieldErrors ?? {}, "email")}
             </p>
           ) : null}
@@ -161,11 +158,11 @@ export function SignupForm({ roles, enabled = true }: SignupFormProps) {
             }
           />
           {fieldError(fieldErrors ?? {}, "password") ? (
-            <p id="signup-password-error" className="mt-2 text-base font-medium text-remme-status-attention">
+            <p id="signup-password-error" className="mt-2 text-base font-medium text-[#ff9f0a]">
               {fieldError(fieldErrors ?? {}, "password")}
             </p>
           ) : (
-            <p id="password-hint" className="mt-2 text-sm text-remme-ink/50 dark:text-remme-inklight/50">
+            <p id="password-hint" className="mt-2 text-sm text-[#86868b]/70">
               Use at least 8 characters.
             </p>
           )}
@@ -189,7 +186,7 @@ export function SignupForm({ roles, enabled = true }: SignupFormProps) {
             ))}
           </Select>
           {fieldError(fieldErrors ?? {}, "role") ? (
-            <p id="signup-role-error" className="mt-2 text-base font-medium text-remme-status-attention">
+            <p id="signup-role-error" className="mt-2 text-base font-medium text-[#ff9f0a]">
               {fieldError(fieldErrors ?? {}, "role")}
             </p>
           ) : null}
@@ -201,7 +198,7 @@ export function SignupForm({ roles, enabled = true }: SignupFormProps) {
           id="signup-error"
           role="alert"
           aria-live="polite"
-          className="rounded-2xl border border-remme-status-attention/40 bg-remme-status-attention/10 px-4 py-3 text-base font-medium text-remme-status-attention"
+          className="rounded-[12px] border border-[#ff9f0a]/30 bg-[#ff9f0a]/8 px-4 py-3 text-[15px] font-medium text-[#ff9f0a]"
         >
           {formError.field
             ? `${FRIENDLY_NAMES[formError.field] ?? formError.field}: ${formError.message}`
@@ -209,13 +206,13 @@ export function SignupForm({ roles, enabled = true }: SignupFormProps) {
         </p>
       ) : null}
 
-      <Button type="submit" variant="sage" className="min-touch w-full" isLoading={loading}>
+      <Button type="submit" className="min-touch w-full" isLoading={loading}>
         {loading ? "Creating account…" : "Create account"}
       </Button>
 
-      <p className="text-center text-lg text-remme-ink/60 dark:text-remme-inklight/60">
+      <p className="text-center text-[15px] text-[#86868b]">
         Already have an account?{" "}
-        <Link href="/login" className="font-semibold text-remme-sage hover:underline">
+        <Link href="/login" className="font-semibold text-[#0071e3] hover:underline">
           Sign in
         </Link>
       </p>

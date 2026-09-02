@@ -5,7 +5,7 @@ export interface SelectProps
   extends React.SelectHTMLAttributes<HTMLSelectElement> {}
 
 /**
- * Accessible dropdown with a comfortable touch target.
+ * Accessible dropdown with Apple-style design.
  */
 const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   ({ className, children, ...props }, ref) => {
@@ -13,7 +13,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
       <div className="relative w-full">
         <select
           className={cn(
-            "flex min-h-14 w-full appearance-none rounded-2xl border border-remme-sage/25 bg-white/70 px-5 py-3 pr-12 text-lg text-remme-ink shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-remme-sage/30 focus-visible:border-remme-sage/40 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-remme-charcoal/70 dark:text-remme-inklight dark:border-white/10",
+            "flex min-h-12 w-full appearance-none rounded-xl border border-[rgba(0,0,0,0.1)] bg-[#f5f5f7] px-4 py-3 pr-12 text-base text-[#1d1d1f] shadow-sm transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0071e3]/30 focus-visible:border-[#0071e3] disabled:cursor-not-allowed disabled:opacity-50",
             className,
           )}
           ref={ref}
@@ -24,7 +24,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
         {/* Chevron */}
         <svg
           aria-hidden="true"
-          className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-remme-ink/50 dark:text-remme-inklight/50"
+          className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#86868b]"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"

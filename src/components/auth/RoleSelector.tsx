@@ -14,7 +14,6 @@ export interface RoleOptionData {
   primary: string;
   description: string;
   href?: string;
-  /** Only present for caregiver: the linked patients to pick from. */
   patients?: PatientSummary[];
 }
 
@@ -25,9 +24,7 @@ interface RoleSelectorProps {
 }
 
 /**
- * Post-login "Who are you signing in as?" screen. Shows a card per role the
- * account can act as (patient and/or caregiver). Caregiver cards expose a
- * PatientPicker when there are linked patients.
+ * Post-login "Who are you signing in as?" screen.
  */
 export function RoleSelector({ userName, email, options }: RoleSelectorProps) {
   const router = useRouter();
@@ -64,13 +61,13 @@ export function RoleSelector({ userName, email, options }: RoleSelectorProps) {
                 className="flex flex-col p-6"
               >
                 <div className="flex flex-col gap-3">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-remme-amber/20 text-remme-amber">
-                    <HeartHandshake aria-hidden="true" className="h-7 w-7" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-[16px] bg-[#ff9f0a]/10 text-[#ff9f0a]">
+                    <HeartHandshake aria-hidden="true" className="h-7 w-7" strokeWidth={1.5} />
                   </div>
-                  <h2 className="text-xl font-semibold text-remme-ink dark:text-remme-inklight">
+                  <h2 className="text-xl font-semibold text-[#1d1d1f]">
                     {option.primary}
                   </h2>
-                  <p className="text-base text-remme-ink/60 dark:text-remme-inklight/60">
+                  <p className="text-base text-[#86868b]">
                     {option.description}
                   </p>
                 </div>
@@ -99,22 +96,21 @@ export function RoleSelector({ userName, email, options }: RoleSelectorProps) {
               className="flex flex-col p-6"
             >
               <div className="flex flex-1 flex-col gap-3">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-remme-sage/20 text-remme-sage">
+                <div className="flex h-14 w-14 items-center justify-center rounded-[16px] bg-[#0071e3]/10 text-[#0071e3]">
                   {option.type === "admin" ? (
-                    <ShieldCheck aria-hidden="true" className="h-7 w-7" />
+                    <ShieldCheck aria-hidden="true" className="h-7 w-7" strokeWidth={1.5} />
                   ) : (
-                    <User aria-hidden="true" className="h-7 w-7" />
+                    <User aria-hidden="true" className="h-7 w-7" strokeWidth={1.5} />
                   )}
                 </div>
-                <h2 className="text-xl font-semibold text-remme-ink dark:text-remme-inklight">
+                <h2 className="text-xl font-semibold text-[#1d1d1f]">
                   {option.primary}
                 </h2>
-                <p className="text-base text-remme-ink/60 dark:text-remme-inklight/60">
+                <p className="text-base text-[#86868b]">
                   {option.description}
                 </p>
               </div>
               <Button
-                variant={option.type === "patient" ? "sage" : "outline"}
                 className="mt-4 w-full"
                 onClick={() => choose(option)}
               >
@@ -126,11 +122,11 @@ export function RoleSelector({ userName, email, options }: RoleSelectorProps) {
       </div>
 
       <div className="flex items-center justify-between pt-2">
-        <p className="text-sm text-remme-ink/50 dark:text-remme-inklight/50">
+        <p className="text-sm text-[#86868b]/70">
           This is a shared device.
         </p>
         <Button variant="ghost" size="sm" onClick={onLogout}>
-          <LogOut aria-hidden="true" className="mr-2 h-4 w-4" />
+          <LogOut aria-hidden="true" className="mr-2 h-4 w-4" strokeWidth={1.5} />
           Switch account
         </Button>
       </div>
@@ -153,33 +149,33 @@ function PatientCard({
   return (
     <Card variant="default" className="p-6">
       <div className="flex items-center gap-5">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-remme-sage/20 text-2xl font-bold text-remme-sage">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#0071e3]/10 text-2xl font-bold text-[#0071e3]">
           {userName ? userName[0]?.toUpperCase() : "R"}
         </div>
         <div className="min-w-0">
-          <p className="truncate text-2xl font-semibold text-remme-ink dark:text-remme-inklight">
+          <p className="truncate text-2xl font-semibold text-[#1d1d1f]">
             Hi, {userName ?? "there"}
           </p>
           {email ? (
-            <p className="truncate text-base text-remme-ink/60 dark:text-remme-inklight/60">
+            <p className="truncate text-base text-[#86868b]">
               {email}
             </p>
           ) : null}
         </div>
       </div>
-      <p className="mt-5 text-xl text-remme-ink dark:text-remme-inklight">
+      <p className="mt-5 text-xl text-[#1d1d1f]">
         Who are you signing in as?
       </p>
       {patient ? (
         <Button
           variant="ghost"
-          className="mt-2 px-0 text-remme-sage"
+          className="mt-2 px-0 text-[#0071e3]"
           onClick={() => onChoose(patient)}
         >
           I am the person using care
         </Button>
       ) : (
-        <p className="mt-2 text-lg text-remme-ink/60 dark:text-remme-inklight/60">
+        <p className="mt-2 text-lg text-[#86868b]">
           I am a caregiver or family member
         </p>
       )}

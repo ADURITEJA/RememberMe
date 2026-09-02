@@ -16,13 +16,11 @@ export interface PatientSummary {
 
 interface PatientPickerProps {
   patients: PatientSummary[];
-  /** Where the caregiver lands after picking a patient (dashboard variant). */
   dashboardHref: string;
 }
 
 /**
- * Lists the patients a caregiver is linked to. Picking one persists the
- * "last profile" on this device and heads to the caregiver dashboard.
+ * Lists the patients a caregiver is linked to.
  */
 export function PatientPicker({ patients, dashboardHref }: PatientPickerProps) {
   const router = useRouter();
@@ -30,7 +28,7 @@ export function PatientPicker({ patients, dashboardHref }: PatientPickerProps) {
 
   if (patients.length === 0) {
     return (
-      <p className="text-lg text-remme-ink/60 dark:text-remme-inklight/60">
+      <p className="text-lg text-[#86868b]">
         No patients are linked to you yet.
       </p>
     );
@@ -44,12 +42,11 @@ export function PatientPicker({ patients, dashboardHref }: PatientPickerProps) {
 
   return (
     <div className="space-y-4">
-      <p className="text-lg font-medium text-remme-ink dark:text-remme-inklight">
+      <p className="text-lg font-medium text-[#1d1d1f]">
         Who are you caring for?
       </p>
       <div role="list" aria-label="Linked patients" className="space-y-4">
         {patients.map((patient) => {
-          const avatar = patient.avatar || (patient.name ? patient.name[0] : "?");
           return (
             <Card
               key={patient.id}
@@ -66,31 +63,31 @@ export function PatientPicker({ patients, dashboardHref }: PatientPickerProps) {
                     className="h-16 w-16 shrink-0 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-remme-sage/20 text-remme-sage">
-                    <User aria-hidden="true" className="h-8 w-8" />
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-[#0071e3]/10 text-[#0071e3]">
+                    <User aria-hidden="true" className="h-8 w-8" strokeWidth={1.5} />
                   </div>
                 )}
                 <button
                   type="button"
                   onClick={() => onPick(patient)}
                   aria-label={`Care for ${patient.name ?? "this patient"}`}
-                  className="flex min-h-16 flex-1 items-center justify-between gap-4 rounded-2xl px-2 text-left focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-remme-sage/40"
+                  className="flex min-h-16 flex-1 items-center justify-between gap-4 rounded-[12px] px-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0071e3]/40"
                 >
                   <span>
-                    <span className="block text-xl font-semibold text-remme-ink dark:text-remme-inklight">
+                    <span className="block text-xl font-semibold text-[#1d1d1f]">
                       {patient.name ?? "Unnamed patient"}
                     </span>
                     {patient.email ? (
-                      <span className="block text-base text-remme-ink/60 dark:text-remme-inklight/60">
+                      <span className="block text-base text-[#86868b]">
                         {patient.email}
                       </span>
                     ) : null}
                   </span>
-                  <ChevronRight aria-hidden="true" className="h-6 w-6 shrink-0 text-remme-sage" />
+                  <ChevronRight aria-hidden="true" className="h-6 w-6 shrink-0 text-[#86868b]" strokeWidth={1.5} />
                 </button>
               </div>
               <Badge variant="sage" className="mt-3">
-                <HeartHandshake aria-hidden="true" className="h-4 w-4" />
+                <HeartHandshake aria-hidden="true" className="h-4 w-4" strokeWidth={1.5} />
                 Linked patient
               </Badge>
             </Card>
