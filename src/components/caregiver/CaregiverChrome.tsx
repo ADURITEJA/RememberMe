@@ -17,6 +17,9 @@ import {
   HeartHandshake,
   Menu,
   X,
+  Phone,
+  MapPinned,
+  Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { PatientSwitcher, usePatient } from "./PatientSwitcher";
@@ -28,8 +31,10 @@ const NAV = [
   { href: "/caregiver/routines", label: "Routines", icon: CalendarDays },
   { href: "/caregiver/memories", label: "Memory", icon: Sparkles },
   { href: "/caregiver/people", label: "People", icon: Users },
+  { href: "/caregiver/emergency-contacts", label: "SOS Contacts", icon: Phone },
+  { href: "/caregiver/places", label: "Places", icon: MapPinned },
   { href: "/caregiver/alerts", label: "Alerts", icon: Siren },
-  { href: "/caregiver/location", label: "Location", icon: MapPin },
+  { href: "/caregiver/location", label: "Zones", icon: Shield },
   { href: "/caregiver/reports", label: "Reports", icon: FileText },
   { href: "/caregiver/settings", label: "Settings", icon: Settings },
 ];
