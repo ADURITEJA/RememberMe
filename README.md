@@ -11,7 +11,7 @@ A production-quality **dementia-care and cognitive-support application**. Remme 
 ```bash
 cp .env.example .env            # if needed
 npm install
-npx prisma db push              # create & sync SQLite schema (remme/prisma/dev.db)
+./node_modules/.bin/prisma db push   # create & sync SQLite schema (remme/prisma/dev.db)
 npm run db:seed                 # demo data: Ravi Kumar (patient) + Anitha Kumar (caregiver)
 npm run dev                     # http://localhost:3000
 ```
@@ -28,25 +28,36 @@ npm run dev                     # http://localhost:3000
 - **Next.js 16.3.3** (App Router, Turbopack) — React 19
 - **Tailwind CSS v4** — "Liquid Glass" calm design system via CSS `@theme` tokens
 - **Prisma 5.22 + SQLite** — full relational schema
-- **NextAuth 4 + @auth/prisma-adapter** — email/password (bcrypt) with `JWT` strategy
+- **NextAuth v5 + @auth/prisma-adapter** — email/password (bcrypt) with `JWT` strategy
 - **jspdf** — PDF keepsake reports and printable memory cards
 - **Web Speech API** — browser-based voice recording → transcript for memories, TTS for listening back ("Listen" narration)
 
 ## Feature tour
 
-| Area | Care Mode (`/care`) | Caregiver Mode (`/caregiver`) |
+| Area | Care Mode (`/`) | Caregiver Mode (`/caregiver`) |
 | ---- | ------------------- | ----------------------------- |
-| Home | Today greeting, "up next" reminders, day summary, quick actions | Dashboard: reminder/today status, mood trend, memory count, zone status, alert feed |
+| Home | Today greeting, "up next" reminders, day summary, quick actions | Dashboard: reminder/today status, mood trend, memory count, zone status, alert feed, medication adherence |
 | Reminders | Big "take your pills" check-off, gentle new-reminder form | Management grid with create/edit/delete/done + today status |
+| Medications | Medication list with dosage and schedule | Full CRUD + dosage tracking + adherence stats |
 | People | Photo cards of the people they love | Photo & contact management for the patient |
 | Memories | "Share a memory" (photo **+** voice **+** transcript as **one linked Memory**), timeline, "Listen" TTS | Memory library + PDF keepsake export + flagging |
-| Assistant | "Remma", a retrieval-only AI companion voice-first, never invents data | — |
+| Assistant | "Remma", a retrieval-only AI companion — voice-first, never invents data | — |
 | Quiz | "Let's remember together 💛" — gentle MCQs built only from the patient's own records | Score trends + PDF snapshot reports |
-| Mood | Five big emotions, one tap, gentle aftercare | Mood trend chart + distribution |
-| Routine | Morning/Afternoon/Evening day plan | — |
-| SOS | Big red button → confirm → alert + contacts | Alert inbox, mark handled |
-| Location & Safety | — | Last ping, Home safety zone (geofencing via haversine), zone events, demo live-ping simulator |
-| Settings | — | Notifications, accessibility (large text / reduce transparency / high contrast), patient connections |
+| Mood | Five big emotions, one tap, gentle aftercare | Mood history timeline + sparkline on dashboard |
+| Routine | Morning/Afternoon/Evening day plan — tap to complete | CRUD management with step ordering |
+| Notifications | Alert list with read/unread status | Notification preferences (email/push toggles) |
+| SOS | Big red button → confirm → alert + emergency contacts | Alert inbox, mark handled |
+| Emergency Contacts | — | Manage contacts shown during SOS |
+| Important Places | — | CRUD for places the patient visits |
+| Safety Zones | — | Geofencing with haversine distance, zone events, demo live-ping simulator |
+| Reports | — | PDF export: mood trends, quiz scores, medication adherence |
+| Alerts | — | Real-time alert inbox with type filtering and mark-read |
+| Settings | Profile editing, password change, care profile (DOB, address, diagnosis, medical notes), GDPR data export, account deletion, sign out | 4 tabs: notifications, patient management, accessibility, profile |
+| Onboarding | First-run wizard: Welcome → Caregiver → Routine → SOS → Done | — |
+| Accessibility | — | Large text, reduce transparency, high contrast (syncs to Care Mode) |
+| Patient Linking | — | Link/unlink patients by email |
+| Multi-Patient | — | Switch between patients from sidebar |
+| Error Handling | Custom 404 page, error boundary with retry, branded loading states | Same |
 
 ## Purpose & audience
 
@@ -64,10 +75,12 @@ npm run dev                     # http://localhost:3000
 1. **Patient daily rhythm** — sign in → Home greeting → take morning pills (check-off) → share a memory (photo + record voice) → hear it read back.
 2. **Remma, the memory companion** — ask "When did we go to Goa?" → retrieval pulls the real Goa memory → gentle answer + "Listen" playback; ask something unknowable → safe fallback, no fabrication.
 3. **Caregiver oversight** — dashboard → alert inbox → mark handled.
-4. **Safety** — caregiver opens Location & Safety → sees Ravi is inside/outside Home zone → zone-exit alert in inbox.
+4. **Safety** — caregiver opens Location & Safety → sees patient is inside/outside Home zone → zone-exit alert in inbox.
 5. **Memory keepsake** — caregiver exports a memory card to PDF and prints it.
 6. **Gentle cognitive check-in** — patient plays the memory quiz; score trend visible to caregiver; report PDF for the next appointment.
-7. **Caregiver multi-patient** — a caregiver serving several people switches patients from the top bar.
+7. **Caregiver multi-patient** — a caregiver serving several people switches patients from the sidebar.
+8. **Profile management** — patient or caregiver edits name, email, password; patient adds diagnosis and medical notes; GDPR data export; account deletion with password confirmation.
+9. **First-time onboarding** — new patients see a 5-step wizard introducing the app's key features on their first login.
 
 ## Documentation
 
@@ -84,18 +97,25 @@ npm run dev                     # http://localhost:3000
 ```
 remme/
 ├─ prisma/
-│  ├─ schema.prisma   # full relational schema
-│  └─ seed.mjs        # demo data (idempotent)
+│  ├─ schema.prisma        # full relational schema
+│  └─ seed.mjs             # demo data (idempotent)
 └─ src/
    ├─ app/
-   │  ├─ (auth)/      # /login /signup /role
-   │  ├─ (care)/      # Care Mode pages
-   │  ├─ (caregiver)/ # Caregiver Mode pages
-   │  └─ api/         # route handlers (reminders, memories, people, alerts, location, quiz, sos…)
+   │  ├─ (auth)/           # /login /signup /role
+   │  ├─ (care)/           # Care Mode pages (home, reminders, meds, people, memories, mood, routine, quiz, notifications, sos, settings)
+   │  ├─ caregiver/        # Caregiver Mode pages (dashboard, reminders, meds, people, memories, mood, routine, alerts, reports, places, zones, settings)
+   │  ├─ api/              # route handlers (reminders, memories, people, alerts, location, quiz, sos, profile, assistant…)
+   │  ├─ error.tsx         # global error boundary
+   │  ├─ not-found.tsx     # custom 404 page
+   │  └─ loading.tsx       # root loading state
    ├─ components/
-   │  ├─ ui/          # button, card, input, dialog, badge, skeleton, a11y…
-   │  ├─ auth/ care/ caregiver/
-   ├─ lib/            # auth, prisma, geo, roles, service mocks
+   │  ├─ ui/               # button, card, input, dialog, badge, skeleton, a11y…
+   │  ├─ auth/             # signup form, role selector
+   │  ├─ care/             # patient-side components (NavBar, MoodPicker, AssistantChat, RoutineStepItem…)
+   │  ├─ caregiver/        # caregiver-side components (CaregiverChrome, PatientSwitcher, MoodHistory, ReportGenerator…)
+   │  ├─ onboarding/       # first-run wizard + gate
+   │  └─ SignOutButton.tsx # shared sign-out component
+   ├─ lib/                 # auth, prisma, geo, roles, service mocks
    └─ types/
 ```
 
